@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ServiceContracks\ServiceContracks.csproj" />
     <ProjectReference Include="..\Services\Services.csproj" />
+    <ProjectReference Include="..\StockMarket.Entities\StockMarket.Entities.csproj" />
   </ItemGroup>
 
 </Project>
