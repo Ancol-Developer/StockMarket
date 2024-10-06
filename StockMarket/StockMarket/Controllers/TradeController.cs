@@ -50,7 +50,7 @@ namespace StockMarket.Controllers
             }
 
             //Send Finnhub token to view
-            ViewBag.FinnhubToken = _configuration["FinnhubToken"];
+            ViewBag.FinnhubToken = "cs0bit1r01qrbtrlar3gcs0bit1r01qrbtrlar40";
 
             return View(stockTrade);
         }
