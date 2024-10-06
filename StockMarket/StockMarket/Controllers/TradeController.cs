@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using ServiceContracks;
-using StockMarket.Entities;
+using StockMarket;
 
 namespace StockMarket.Controllers
 {
