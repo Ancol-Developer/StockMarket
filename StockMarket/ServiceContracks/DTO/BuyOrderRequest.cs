@@ -11,13 +11,13 @@ public class BuyOrderRequest : IValidatableObject
     /// The unique symbol of the stock
     /// </summary>
     [Required(ErrorMessage = "Stock Symbol can't be null or empty")]
-    public string? StockSymbol { get; set; }
+    public string StockSymbol { get; set; }
 
     /// <summary>
     /// The company name of the stock
     /// </summary>
     [Required(ErrorMessage = "Stock Name can't be null or empty")]
-    public string? StockName { get; set; }
+    public string StockName { get; set; }
 
     /// <summary>
     /// Date and time of order, when it is placed by the user
