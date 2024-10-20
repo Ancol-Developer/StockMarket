@@ -54,7 +54,7 @@ public class FinnhubService : IFinnhubService
         HttpRequestMessage httpRequestMessage = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
-            RequestUri = new Uri($"https://finnhub.io/api/v1/quote?symbol={stockSymbol}&token=cs0bit1r01qrbtrlar3gcs0bit1r01qrbtrlar40") //URI includes the secret token
+            RequestUri = new Uri($"https://finnhub.io/api/v1/quote?symbol={stockSymbol}&token={_configuration["FinnhubToken"]}") //URI includes the secret token
         };
 
         //send request
