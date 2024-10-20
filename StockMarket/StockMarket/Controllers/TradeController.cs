@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using ServiceContracks;
-using StockMarket.Entities;
+using StockMarket;
 
 namespace StockMarket.Controllers
 {
@@ -50,7 +50,7 @@ namespace StockMarket.Controllers
             }
 
             //Send Finnhub token to view
-            ViewBag.FinnhubToken = "cs0bit1r01qrbtrlar3gcs0bit1r01qrbtrlar40";
+            ViewBag.FinnhubToken = _configuration["FinnhubToken"];
 
             return View(stockTrade);
         }
