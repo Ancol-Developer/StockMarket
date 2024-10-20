@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StockMarket.Entities\StockMarket.Entities.csproj" />
+  </ItemGroup>
+
 </Project>
