@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using ServiceContracks;
-using StockMarket;
+using ServiceContracks.DTO;
+using StockMarket.Models;
 
 namespace StockMarket.Controllers
 {
@@ -9,6 +10,7 @@ namespace StockMarket.Controllers
     {
         private readonly TradingOptions _tradingOptions;
         private readonly IFinnhubService _finnhubService;
+        private readonly IStocksService _stocksService;
         private readonly IConfiguration _configuration;
 
         /// <summary>
@@ -18,10 +20,11 @@ namespace StockMarket.Controllers
         /// <param name="stocksService">Injecting StocksService</param>
         /// <param name="finnhubService">Injecting FinnhubService</param>
         /// <param name="configuration">Injecting IConfiguration</param>
-        public TradeController(IOptions<TradingOptions> tradingOptions, IFinnhubService finnhubService, IConfiguration configuration)
+        public TradeController(IOptions<TradingOptions> tradingOptions, IFinnhubService finnhubService,IStocksService stocksService ,IConfiguration configuration)
         {
             _tradingOptions = tradingOptions.Value;
             _finnhubService = finnhubService;
+            _stocksService = stocksService;
             _configuration = configuration;
         }
 
@@ -31,7 +34,7 @@ namespace StockMarket.Controllers
         public IActionResult Index()
         {
             // reset Stock symbol if not exists
-            if(string.IsNullOrEmpty(_tradingOptions.DefaultStockSymbol))
+            if (string.IsNullOrEmpty(_tradingOptions.DefaultStockSymbol))
                 _tradingOptions.DefaultStockSymbol = "MSFT";
 
             //get company profile from API server
@@ -53,6 +56,23 @@ namespace StockMarket.Controllers
             ViewBag.FinnhubToken = _configuration["FinnhubToken"];
 
             return View(stockTrade);
+        }
+
+        [Route("[action]")]
+        public IActionResult Orders()
+        {
+            List<BuyOrderResponse> buyOrderResponses = _stocksService.GetBuyOrders();
+            List<SellOrderResponse> sellOrderResponses = _stocksService.GetSellOrders();
+
+            Orders orders = new Orders()
+            {
+                BuyOrders = buyOrderResponses,
+                SellOrders = sellOrderResponses
+            };
+
+            ViewBag.TraddingOptions = _tradingOptions;
+
+            return View(orders);
         }
     }
 }
