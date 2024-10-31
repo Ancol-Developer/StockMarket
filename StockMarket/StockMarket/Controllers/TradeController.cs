@@ -59,6 +59,60 @@ namespace StockMarket.Controllers
         }
 
         [Route("[action]")]
+        [HttpPost]
+        public IActionResult BuyOrder(BuyOrderRequest buyOrderRequest)
+        {
+            // Update date of model
+            buyOrderRequest.DateAndTimeOfOrder = DateTime.Now;
+
+            // re-validate the model object after updating the date
+            ModelState.Clear();
+            TryValidateModel(buyOrderRequest);
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = ModelState.Values.SelectMany(x => x.Errors).Select(y => y.ErrorMessage).ToList();
+                StockTrade stockTrade = new StockTrade()
+                {
+                    StockName = buyOrderRequest.StockName,
+                    Quantity = buyOrderRequest.Quantity,
+                    StockSymbol = buyOrderRequest.StockSymbol,
+                };
+
+                return View("Index", stockTrade);
+            }
+
+            //invoke service method
+            BuyOrderResponse buyOrderResponse = _stocksService.CreateBuyOrder(buyOrderRequest);
+
+            return RedirectToAction(nameof(Orders));
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public IActionResult SellOrder(SellOrderRequest sellOrderRequest)
+        {
+            // Update date of model
+            sellOrderRequest.DateAndTimeOfOrder = DateTime.Now;
+
+            // re-validate the model object after updating the date
+            ModelState.Clear();
+            TryValidateModel(sellOrderRequest);
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                StockTrade stockTrade = new StockTrade() { StockName = sellOrderRequest.StockName, Quantity = sellOrderRequest.Quantity, StockSymbol = sellOrderRequest.StockSymbol };
+                return View("Index", stockTrade);
+            }
+
+            //invoke service method
+            SellOrderResponse sellOrderResponse = _stocksService.CreateSellOrder(sellOrderRequest);
+
+            return RedirectToAction(nameof(Orders));
+        }
+
+        [Route("[action]")]
         public IActionResult Orders()
         {
             List<BuyOrderResponse> buyOrderResponses = _stocksService.GetBuyOrders();
