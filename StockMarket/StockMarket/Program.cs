@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using ServiceContracks;
 using Services;
 using StockMarket;
+using StockMarket.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,12 @@ builder.Services.Configure<TradingOptions>(builder.Configuration.GetSection("Tra
 builder.Services.AddSingleton<IFinnhubService, FinnhubService>();
 builder.Services.AddSingleton<IStocksService, StocksService>();
 builder.Services.AddHttpClient();
+
+// Create DB context
+builder.Services.AddDbContext<StockMarketDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 var app = builder.Build();
 
