@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Rotativa.AspNetCore;
 using ServiceContracks;
 using ServiceContracks.DTO;
 using StockMarket.Models;
+using System.Collections.Generic;
 
 namespace StockMarket.Controllers
 {
@@ -49,7 +51,7 @@ namespace StockMarket.Controllers
             //load data from finnHubService into model object
             if (companyProfileDictionary != null && stockQuoteDictionary != null)
             {
-                stockTrade = new StockTrade() { StockSymbol = Convert.ToString(companyProfileDictionary["ticker"]), StockName = Convert.ToString(companyProfileDictionary["name"]), Price = Convert.ToDouble(stockQuoteDictionary["c"].ToString()) };
+                stockTrade = new StockTrade() { StockSymbol = Convert.ToString(companyProfileDictionary["ticker"]), StockName = Convert.ToString(companyProfileDictionary["name"]),Quantity = _tradingOptions.DefaultOrderQuantity ?? 0, Price = Convert.ToDouble(stockQuoteDictionary["c"].ToString()) };
             }
 
             //Send Finnhub token to view
@@ -60,7 +62,7 @@ namespace StockMarket.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public IActionResult BuyOrder(BuyOrderRequest buyOrderRequest)
+        public async Task<IActionResult> BuyOrder(BuyOrderRequest buyOrderRequest)
         {
             // Update date of model
             buyOrderRequest.DateAndTimeOfOrder = DateTime.Now;
@@ -83,14 +85,14 @@ namespace StockMarket.Controllers
             }
 
             //invoke service method
-            BuyOrderResponse buyOrderResponse = _stocksService.CreateBuyOrder(buyOrderRequest);
+            BuyOrderResponse buyOrderResponse = await _stocksService.CreateBuyOrder(buyOrderRequest);
 
             return RedirectToAction(nameof(Orders));
         }
 
         [Route("[action]")]
         [HttpPost]
-        public IActionResult SellOrder(SellOrderRequest sellOrderRequest)
+        public async Task<IActionResult> SellOrder(SellOrderRequest sellOrderRequest)
         {
             // Update date of model
             sellOrderRequest.DateAndTimeOfOrder = DateTime.Now;
@@ -107,16 +109,16 @@ namespace StockMarket.Controllers
             }
 
             //invoke service method
-            SellOrderResponse sellOrderResponse = _stocksService.CreateSellOrder(sellOrderRequest);
+            SellOrderResponse sellOrderResponse = await _stocksService.CreateSellOrder(sellOrderRequest);
 
             return RedirectToAction(nameof(Orders));
         }
 
         [Route("[action]")]
-        public IActionResult Orders()
+        public async Task<IActionResult> Orders()
         {
-            List<BuyOrderResponse> buyOrderResponses = _stocksService.GetBuyOrders();
-            List<SellOrderResponse> sellOrderResponses = _stocksService.GetSellOrders();
+            List<BuyOrderResponse> buyOrderResponses = await _stocksService.GetBuyOrders();
+            List<SellOrderResponse> sellOrderResponses = await _stocksService.GetSellOrders();
 
             Orders orders = new Orders()
             {
@@ -127,6 +129,25 @@ namespace StockMarket.Controllers
             ViewBag.TraddingOptions = _tradingOptions;
 
             return View(orders);
+        }
+
+        [Route("OrdersPDF")]
+        public async Task<IActionResult> OrdersPDF()
+        {
+            //Get list of orders
+            List<IOrderResponse> orders = new List<IOrderResponse>();
+            orders.AddRange(await _stocksService.GetBuyOrders());
+            orders.AddRange(await _stocksService.GetSellOrders());
+            orders = orders.OrderByDescending(temp => temp.DateAndTimeOfOrder).ToList();
+
+            ViewBag.TradingOptions = _tradingOptions;
+
+            //Return view as pdf
+            return new ViewAsPdf("OrdersPDF", orders, ViewData)
+            {
+                PageMargins = new Rotativa.AspNetCore.Options.Margins() { Top = 20, Right = 20, Bottom = 20, Left = 20 },
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+            };
         }
     }
 }

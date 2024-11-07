@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 /// <summary>
 /// DTO class that represents a sell order - that can be used as return type of Stocks service
 /// </summary>
-public class SellOrderResponse
+public class SellOrderResponse : IOrderResponse
 {
     /// <summary>
     /// The unique ID of the sell order
@@ -44,6 +44,8 @@ public class SellOrderResponse
     public double Price { get; set; }
 
     public double TradeAmount { get; set; }
+
+    public OrderType TypeOfOrder => OrderType.SellOrder;
 
     /// <summary>
     /// Checks if the current object and other (parameter) object values match
