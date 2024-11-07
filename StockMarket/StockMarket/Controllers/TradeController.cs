@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Rotativa.AspNetCore;
 using ServiceContracks;
 using ServiceContracks.DTO;
 using StockMarket.Models;
+using System.Collections.Generic;
 
 namespace StockMarket.Controllers
 {
@@ -127,6 +129,25 @@ namespace StockMarket.Controllers
             ViewBag.TraddingOptions = _tradingOptions;
 
             return View(orders);
+        }
+
+        [Route("OrdersPDF")]
+        public async Task<IActionResult> OrdersPDF()
+        {
+            //Get list of orders
+            List<IOrderResponse> orders = new List<IOrderResponse>();
+            orders.AddRange(await _stocksService.GetBuyOrders());
+            orders.AddRange(await _stocksService.GetSellOrders());
+            orders = orders.OrderByDescending(temp => temp.DateAndTimeOfOrder).ToList();
+
+            ViewBag.TradingOptions = _tradingOptions;
+
+            //Return view as pdf
+            return new ViewAsPdf("OrdersPDF", orders, ViewData)
+            {
+                PageMargins = new Rotativa.AspNetCore.Options.Margins() { Top = 20, Right = 20, Bottom = 20, Left = 20 },
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape
+            };
         }
     }
 }

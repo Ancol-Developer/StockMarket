@@ -2,7 +2,7 @@
 
 namespace ServiceContracks.DTO;
 
-public class BuyOrderResponse
+public class BuyOrderResponse : IOrderResponse
 {
     /// <summary>
     /// The unique ID of the buy order
@@ -38,6 +38,8 @@ public class BuyOrderResponse
     /// Number of Trade
     /// </summary>
     public double TradeAmount { get; set; }
+
+    public OrderType TypeOfOrder => OrderType.BuyOrder;
 
     /// <summary>
     /// Checks if the current object and other (parameter) object values match
