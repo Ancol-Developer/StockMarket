@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StockMarket.Entities\StockMarket.Entities.csproj" />
+    <ProjectReference Include="..\ServiceContracks\ServiceContracks.csproj" />
   </ItemGroup>
 
 </Project>

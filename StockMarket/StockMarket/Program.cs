@@ -18,6 +18,7 @@ builder.Services.AddScoped<IStocksService, StocksService>();
 
 // Repositories
 builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
+builder.Services.AddTransient<IStockRepository, StocksRepository>();
 
 builder.Services.AddHttpClient();
 
