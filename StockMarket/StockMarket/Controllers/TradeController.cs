@@ -30,23 +30,22 @@ namespace StockMarket.Controllers
             _configuration = configuration;
         }
 
-        [Route("/")]
-        [Route("[action]")]
-        [Route("~/[controller]")]
-        public IActionResult Index()
+        [Route("~/[controller]/[action]/{stockSymbol}")]
+        [Route("~/[controller]/{stockSymbol}")]
+        public async Task<IActionResult> Index(string stockSymbol)
         {
             // reset Stock symbol if not exists
-            if (string.IsNullOrEmpty(_tradingOptions.DefaultStockSymbol))
-                _tradingOptions.DefaultStockSymbol = "MSFT";
+            if (string.IsNullOrEmpty(stockSymbol))
+                stockSymbol = "MSFT";
 
             //get company profile from API server
-            Dictionary<string, object>? companyProfileDictionary = _finnhubService.GetCompanyProfile(_tradingOptions.DefaultStockSymbol);
+            Dictionary<string, object>? companyProfileDictionary = await _finnhubService.GetCompanyProfile(stockSymbol);
 
             //get stock price quotes from API server
-            Dictionary<string, object>? stockQuoteDictionary = _finnhubService.GetStockPriceQuote(_tradingOptions.DefaultStockSymbol);
+            Dictionary<string, object>? stockQuoteDictionary = await _finnhubService.GetStockPriceQuote(stockSymbol);
 
             //create model object
-            StockTrade stockTrade = new StockTrade() { StockSymbol = _tradingOptions.DefaultStockSymbol };
+            StockTrade stockTrade = new StockTrade() { StockSymbol = stockSymbol };
 
             //load data from finnHubService into model object
             if (companyProfileDictionary != null && stockQuoteDictionary != null)
