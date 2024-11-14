@@ -34,18 +34,21 @@ namespace StockMarket.Controllers
 
             if (stocksDictionary is not null)
             {
-                string[]? Top25PopularStocksList = _tradingOptions.Top25PopularStocks?.Split(",");
-                if (Top25PopularStocksList is not null)
+                if(!showAll && _tradingOptions.Top25PopularStocks != null)
                 {
-                    stocksDictionary = stocksDictionary
-                     .Where(temp => Top25PopularStocksList.Contains(Convert.ToString(temp["symbol"])))
-                     .ToList();
-                }
+                    string[]? Top25PopularStocksList = _tradingOptions.Top25PopularStocks?.Split(",");
+                    if (Top25PopularStocksList is not null)
+                    {
+                        stocksDictionary = stocksDictionary
+                         .Where(temp => Top25PopularStocksList.Contains(Convert.ToString(temp["symbol"])))
+                         .ToList();
+                    }
 
-                //convert dictionary objects into Stock objects
-                stocks = stocksDictionary
-                 .Select(temp => new Stock() { StockName = Convert.ToString(temp["description"]), StockSymbol = Convert.ToString(temp["symbol"]) })
-                .ToList();
+                    //convert dictionary objects into Stock objects
+                    stocks = stocksDictionary
+                     .Select(temp => new Stock() { StockName = Convert.ToString(temp["description"]), StockSymbol = Convert.ToString(temp["symbol"]) })
+                    .ToList();
+                }
             }
 
             ViewBag.stock = stock;
