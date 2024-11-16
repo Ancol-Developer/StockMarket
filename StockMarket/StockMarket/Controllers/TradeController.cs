@@ -89,7 +89,8 @@ namespace StockMarket.Controllers
             return RedirectToAction(nameof(Orders));
         }
 
-        [Route("[action]")]
+        [Route(
+            "[action]")]
         [HttpPost]
         public async Task<IActionResult> SellOrder(SellOrderRequest sellOrderRequest)
         {
