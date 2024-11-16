@@ -15,6 +15,9 @@ namespace StockMarket.Controllers
         private readonly IStocksService _stocksService;
         private readonly IConfiguration _configuration;
 
+        // Logger
+        private readonly ILogger<TradeController> _logger;
+
         /// <summary>
         /// Constructor for TradeController that executes when a new object is created for the class
         /// </summary>
@@ -22,18 +25,23 @@ namespace StockMarket.Controllers
         /// <param name="stocksService">Injecting StocksService</param>
         /// <param name="finnhubService">Injecting FinnhubService</param>
         /// <param name="configuration">Injecting IConfiguration</param>
-        public TradeController(IOptions<TradingOptions> tradingOptions, IFinnhubService finnhubService,IStocksService stocksService ,IConfiguration configuration)
+        public TradeController(IOptions<TradingOptions> tradingOptions, IFinnhubService finnhubService,IStocksService stocksService ,IConfiguration configuration, ILogger<TradeController> logger)
         {
             _tradingOptions = tradingOptions.Value;
             _finnhubService = finnhubService;
             _stocksService = stocksService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [Route("~/[controller]/[action]/{stockSymbol}")]
         [Route("~/[controller]/{stockSymbol}")]
         public async Task<IActionResult> Index(string stockSymbol)
         {
+            // Logger
+            _logger.LogInformation("In TradeController.Index() action method");
+            _logger.LogDebug("strockSymbol: {stockSymbol}", stockSymbol);
+
             // reset Stock symbol if not exists
             if (string.IsNullOrEmpty(stockSymbol))
                 stockSymbol = "MSFT";
@@ -89,7 +97,8 @@ namespace StockMarket.Controllers
             return RedirectToAction(nameof(Orders));
         }
 
-        [Route("[action]")]
+        [Route(
+            "[action]")]
         [HttpPost]
         public async Task<IActionResult> SellOrder(SellOrderRequest sellOrderRequest)
         {

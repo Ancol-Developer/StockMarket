@@ -1,12 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using RepositoryContracts;
+using Serilog;
 using ServiceContracks;
 using Services;
 using StockMarket;
 using StockMarket.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Serilog
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
+{
+    loggerConfiguration
+    .ReadFrom.Configuration(context.Configuration) // read configuration settings from built-in IConfiguration 
+    .ReadFrom.Services(services); //read out current app's services and make them available to serilog
+});
 
 //Services
 builder.Services.AddControllersWithViews();
@@ -26,6 +35,11 @@ builder.Services.AddHttpClient();
 builder.Services.AddDbContext<StockMarketDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddHttpLogging(option =>
+{
+    option.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders;
 });
 
 var app = builder.Build();
