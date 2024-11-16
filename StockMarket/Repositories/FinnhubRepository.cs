@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using RepositoryContracts;
 using System.Net.Http;
 using System.Text.Json;
@@ -9,15 +10,20 @@ public class FinnhubRepository : IFinnhubRepository
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<FinnhubRepository> _logger;
 
-    public FinnhubRepository(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+    public FinnhubRepository(IHttpClientFactory httpClientFactory, IConfiguration configuration, ILogger<FinnhubRepository> logger)
     {
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task<Dictionary<string, object>?> GetCompanyProfile(string stockSymbol)
     {
+        //Log
+        _logger.LogInformation("In {ClassName}.{MethodName}", nameof(FinnhubRepository), nameof(GetCompanyProfile));
+
         //create http client
         HttpClient httpClient = _httpClientFactory.CreateClient();
 
@@ -49,6 +55,9 @@ public class FinnhubRepository : IFinnhubRepository
 
     public async Task<List<Dictionary<string, string>>?> GetStocks()
     {
+        // Log
+        _logger.LogInformation("In {ClassName}.{MethodName}", nameof(FinnhubRepository), nameof(GetStockPriceQuote));
+
         //create http client
         HttpClient httpClient = _httpClientFactory.CreateClient();
 
@@ -77,6 +86,9 @@ public class FinnhubRepository : IFinnhubRepository
 
     public async Task<Dictionary<string, object>?> GetStockPriceQuote(string stockSymbol)
     {
+        // Log
+        _logger.LogInformation("In {ClassName}.{MethodName}", nameof(FinnhubRepository), nameof(GetStockPriceQuote));
+
         //create http client
         HttpClient httpClient = _httpClientFactory.CreateClient();
 
@@ -108,6 +120,9 @@ public class FinnhubRepository : IFinnhubRepository
 
     public async Task<Dictionary<string, object>?> SearchStocks(string stockSymbolToSearch)
     {
+        // Log
+        _logger.LogInformation("In {ClassName}.{MethodName}", nameof(FinnhubRepository), nameof(SearchStocks));
+
         //create http client
         HttpClient httpClient = _httpClientFactory.CreateClient();
 
