@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using StockMarket.Entities.IdentityEntities;
 
 namespace StockMarket.Entities;
 
-public class StockMarketDbContext : DbContext
+public class StockMarketDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public StockMarketDbContext(DbContextOptions options) : base(options)
     {
@@ -15,7 +17,7 @@ public class StockMarketDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<BuyOrder>();
-        modelBuilder.Entity<SellOrder>();
+        modelBuilder.Entity<BuyOrder>().ToTable("BuyOrders");
+        modelBuilder.Entity<SellOrder>().ToTable("SellOrders");
     }
 }
