@@ -1,5 +1,6 @@
 ﻿namespace ServiceContracks.DTO;
 using StockMarket.Entities;
+using StockMarket.Entities.CustomValidations;
 using System.ComponentModel.DataAnnotations;
 
 /// <summary>
@@ -22,6 +23,7 @@ public class BuyOrderRequest : IValidatableObject, IOrderRequest
     /// <summary>
     /// Date and time of order, when it is placed by the user
     /// </summary>
+    [OrderAndSellDateTimeValidation("Jan 01,2000")]
     public DateTime DateAndTimeOfOrder { get; set; }
 
 
