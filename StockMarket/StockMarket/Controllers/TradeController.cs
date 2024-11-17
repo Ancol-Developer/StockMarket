@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Rotativa.AspNetCore;
 using ServiceContracks;
 using ServiceContracks.DTO;
+using StockMarket.Filters;
 using StockMarket.Models;
 using System.Collections.Generic;
 
@@ -69,6 +70,7 @@ namespace StockMarket.Controllers
 
         [Route("[action]")]
         [HttpPost]
+        [TypeFilter(typeof(CreateOrderActionFilter))]
         public async Task<IActionResult> BuyOrder(BuyOrderRequest buyOrderRequest)
         {
             // Update date of model
@@ -97,9 +99,9 @@ namespace StockMarket.Controllers
             return RedirectToAction(nameof(Orders));
         }
 
-        [Route(
-            "[action]")]
+        [Route("[action]")]
         [HttpPost]
+        [TypeFilter(typeof(CreateOrderActionFilter))]
         public async Task<IActionResult> SellOrder(SellOrderRequest sellOrderRequest)
         {
             // Update date of model
