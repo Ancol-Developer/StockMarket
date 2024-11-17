@@ -6,7 +6,7 @@ namespace ServiceContracks.DTO;
 /// <summary>
 /// DTO class that represents a sell order - that can be used while inserting / updating
 /// </summary>
-public class SellOrderRequest : IValidatableObject
+public class SellOrderRequest : IValidatableObject, IOrderRequest
 {
     /// <summary>
     /// The unique symbol of the stock
