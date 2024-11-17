@@ -6,6 +6,7 @@ using ServiceContracks;
 using Services;
 using StockMarket;
 using StockMarket.Entities;
+using StockMarket.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,8 +27,9 @@ builder.Services.AddScoped<IFinnhubService, FinnhubService>();
 builder.Services.AddScoped<IStocksService, StocksService>();
 
 // Repositories
-builder.Services.AddTransient<IFinnhubRepository, FinnhubRepository>();
-builder.Services.AddTransient<IStockRepository, StocksRepository>();
+builder.Services.AddScoped<IFinnhubRepository, FinnhubRepository>();
+builder.Services.AddScoped<IStockRepository, StocksRepository>();
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.AddHttpClient();
 
@@ -47,6 +49,16 @@ var app = builder.Build();
 if (builder.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+}
+
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
 }
 
 Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePath: "Rotativa");
