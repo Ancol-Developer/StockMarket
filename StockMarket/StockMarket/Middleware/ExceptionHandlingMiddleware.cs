@@ -21,15 +21,15 @@ public class ExceptionHandlingMiddleware : IMiddleware
         catch (FinnhubException ex)
         {
             LogException(ex);
-            context.Response.StatusCode = 500;
-            await context.Response.WriteAsync(ex.Message);
+            //context.Response.StatusCode = 500;
+            //await context.Response.WriteAsync(ex.Message);
             throw;
         }
         catch (Exception ex)
         {
             LogException(ex);
-            context.Response.StatusCode = 500;
-            await context.Response.WriteAsync(ex.Message);
+            //context.Response.StatusCode = 500;
+            //await context.Response.WriteAsync(ex.Message);
             throw;
         }
     }
