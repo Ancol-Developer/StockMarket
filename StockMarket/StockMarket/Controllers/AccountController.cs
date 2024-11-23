@@ -60,4 +60,40 @@ public class AccountController : Controller
         }
         return View(registerDTO);
     }
+
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginDTO loginDTO, string? returnUrl)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Errors = ModelState.Values.SelectMany(temp => temp.Errors).Select(temp => temp.ErrorMessage);
+            return View(loginDTO);
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(loginDTO.Email, loginDTO.Password, isPersistent: false, lockoutOnFailure: false);
+        if (result.Succeeded)
+        {
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            return RedirectToAction(nameof(TradeController.Orders), "Trade");
+        }
+        ModelState.AddModelError("Login", "Invalid email or password");
+        return View(loginDTO);
+    }
+
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction(nameof(AccountController.Login), "Account");
+    }
 }
+ 

@@ -65,15 +65,16 @@ builder.Services.AddAuthorization(options =>
     // befores authorization policy (user must be authenticated) for all the action methods
 });
 
+builder.Services.AddHttpLogging(option =>
+{
+    option.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders;
+});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
 });
 
-builder.Services.AddHttpLogging(option =>
-{
-    option.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.RequestProperties | Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.ResponsePropertiesAndHeaders;
-});
 
 var app = builder.Build();
 
@@ -96,6 +97,8 @@ Rotativa.AspNetCore.RotativaConfiguration.Setup("wwwroot", wkhtmltopdfRelativePa
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication(); // erading identity cookie
+app.UseAuthorization();// validate access permissions of the user
 app.MapControllers();
 
 app.Run();
