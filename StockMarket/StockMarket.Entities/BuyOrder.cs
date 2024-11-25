@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockMarket.Entities.CustomValidations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -32,6 +33,7 @@ public class BuyOrder
     /// <summary>
     /// Date and time of order, when it is placed by the user
     /// </summary>
+    [OrderAndSellDateTimeValidation("Jan 01,2000")]
     public DateTime DateAndTimeOfOrder { get; set; }
 
     /// <summary>
